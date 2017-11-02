@@ -29,9 +29,10 @@ def input_word(draw):
 
 def _validation(word, draw):
     """Validations: 1) only use letters of draw, 2) valid dictionary word"""
+    temp_draw = draw.copy()
     for char in word.upper():
-        if char in draw:
-            draw.remove(char)
+        if char in temp_draw:
+            temp_draw.remove(char)
         else:
             raise ValueError("{} not valid, use letters from the draw".format(word))
     if not word.lower() in DICTIONARY:
@@ -52,14 +53,15 @@ def calc_word_value(word):
 def get_possible_dict_words(draw):
     """Get all possible words from draw which are valid dictionary words.
     Use the _get_permutations_draw helper and DICTIONARY constant"""
-    return [word for word in _get_permutations_draw(draw) if word in DICTIONARY]
+    permutations = [''.join(word).lower() for word in _get_permutations_draw(draw)]
+    return set(permutations) & set(DICTIONARY)
 
 
 def _get_permutations_draw(draw):
     """Helper for get_possible_dict_words to get all permutations of draw letters.
     Hint: use itertools.permutations"""
-    return [''.join(word).lower() for length in range(1, NUM_LETTERS+1) for word in itertools.permutations(draw, length)]
-
+    for i in range(1, 8):
+        yield from list(itertools.permutations(draw, i))
 
 # From challenge 01:
 def max_word_value(words):
